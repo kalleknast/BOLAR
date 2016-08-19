@@ -9,7 +9,7 @@ It works by filtering images through banks of oriented filters at different spat
 
 ## How it works
 The images are filtered with <cite>[Gaussian derivative filters][4]</cite> up to the 4rd order, at 4 spatial scales. Each order provided order + 1 filters, so 9 (2 + 3 + 4) filters. Nine f 
-![ ](https://github.com/kalleknast/BOLAR/blob/master/bolar_filters.png  "Filters" =250x250)
+![ ](https://github.com/kalleknast/BOLAR/blob/master/bolar_filters.png  =250x275 "Filters")
 
 
 [1]:http://www.psychology.sunysb.edu/gzelinsky-/index_htm_files/Z2003.pdf
