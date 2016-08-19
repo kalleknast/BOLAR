@@ -6,110 +6,6 @@ Created on Tue Aug 16 16:34:01 2016
 
 BOLAR: Bank of Local Analyzer Responses
 
-From the paper:
-Rather, my goal is to distill from these models a simplified and easily
-implemented approach tailored to the demands of a change detection task.
-Many models of early vision strive to fit data from neurophysiological 
-recording or near-threshold psycho- physics, but this level of specificity is 
-probably unnecessary to a suprathreshold change detection task in which the 
-stimuli are perceptuallydistinct real-world objects. 
-More important to change detection is representational breadth, 
-the coding of many different featural di- mensions at multiple levels. 
-Given the multiplicative relationship between featural dimension 
-(e.g., orientation) and level (e.g., 60º, 45º, etc.), and the need for 
-representational breadth (many dimensions), it is easy to see how the number 
-of filters needed to represent a real-world stimulus can quickly grow quite 
-large. Such a high-dimensional representation would create a sort of featural 
-signature for the patterns appearing in the change detection displays.
-There are two clear advantages to this approach. First, because a filter-based 
-model can be applied to arbitrarily complex stimuli, both simple and complex 
-scenes can be coded in terms of the same base featural primitives. 
-Second, because each of these featural signatures exist in a relatively 
-high-dimensional space, it would no longer be necessary to hand-pick the 
-features to be compared in the change detection process. A change between a 
-horizontal and a vertical bar will generate a response in the feature vector 
-coding for “horizontal” and “vertical,” and a change between a coffee cup and 
-a plate of eggs will generate a response in whatever featural dimensions are 
-specific to those patterns. To achieve somemeasure of representational breadth,
-
-I currently use 108 Gaussian-derivative filters (GDFs) to code the visual 
-features of a scene, with each filter being sensitive to a different spatial or 
-chromatic property. As their name implies, the mathematical functions 
-underlying GDFs are obtainedby differentiating a three-dimensional Gaussian.
-The 108 GDFs used in this study can be broadly classified into three filter 
-types, with each type corresponding to one of the first three derivatives of 
-the Gaussian function. Recall that Gaussian differentiation yields as 
-derivatives oriented functions numbering one more than the order of the 
-derivation. A first-order derivation produces two directional (oriented)
-derivatives, a second-order yields three, and a third-order yields four. 
-These 9 oriented functions were used to represent or filter orientation 
-information in the change detection stimuli. Specifically, first-order filter 
-responses were collected at 0º and 90º orientations; second-order filters were 
-constructed for 0º, 60º, and 120º orientations; and third-order responses were
-collected at 0º, 45º, 90º, and 120º.
-
-This set of nine oriented GDFs is repeated at four octave-separated spatial 
-scales (3 x 3, 7 x 7, 15 x 15, and 31 x 31 pixels),
-accounting for 36 of the 108  filters used in the current representation.
-The term scale in this context can be understood as meaning the size of a 
-filter’s “receptive field.”  Larger scale filters will “see” or acquire 
-information over a relatively large region of the image, 
-thereby enabling them to efficiently extract low spatial frequency patterns 
-from a scene (e.g., the overall shape of an object). 
-Small-scale filters will acquire in- formation over a comparatively narrow 
-region of the image, making them well suited to extract high spatial frequency 
-patterns (e.g., the fine visual structure corresponding to object parts).
-Using filters of varying scales, the current representation therefore performs 
-a coarse spatial frequency analysis of the changedetectionstimuli. 
-These 36 multiscale oriented GDFs are in turn repeated for three 
-color/intensity channels, thereby accounting for all 108 of the filters used in 
-the representation. The first 36 filters perform an achromatic analysis of the 
-scene. Prior to any filtering operations, the red, green, and blue pixel values 
-of the image are simply averaged to produce a grayscale scene. 
-The remaining two channels are indeed chromatic—more specifically, they are 
-color-opponent much like the human visual system. The second channel, 
-Filters 37–72 in the representation, operates on a red–green transformation of 
-the image (meaning that the green pixel values are subtracted from the red, 
-then normalized between 0 and 255). Similarly, the third channel, 
-Filters 73–108, operates on a blue–yellow image transformation, with yellow 
-being the average of the red and green pixel intensities. 
-To summarize, this 108-dimensional filter-based representation can be evenly 
-divided into three color/luminance channels, with each channel in turn being 
-divided into four spatial scales and finally into nine oriented GDFs at each 
-scale.
-
-To obtain these responses, each of the 108 GDFs was centered over the 
-midpoint of the trumpet image (i.e., the midpoint of the filter was aligned 
-with the midpoint of the image) and then con- volved with the portion of the 
-image “covered” by the filter (i.e., a 3 x 3 filter would operate on only the 9
-pixels surrounding the image midpoint,whereas a 31 x 31 filter would analyze a 
-larger 961-pixel region of the image).
-
-
-In order to quantify the visual similarity (or dissimilarity) between any two
-objects undergoing change in Experiment 1, I first computed BOLAR vectors for 
-every pair of corresponding points in the two images, 
-then found the normalized Euclidean distance for each of these vector pairs 
-using the equation:
-
-    E = 1/n * sqrt(sum(b1 - b2)**2)
-
-where n is the dimensionality of the BOLAR representation and b1 and b2 the 
-two BOLAR vectors being compared.
-
-Performing the above-described operation for every corresponding point in the 
-two images, and then normalizing these Euclidean distances between the range of 
-0–255 for visualization, results in the creation of a difference map.
-
-It is possible to further reduce the information on a difference map to obtain 
-a singlenumber representing the visual similarity between two patterns.
-Rather than plotting each of the pair-wise Euclidean distances in the form of 
-a map, a single similarity estimate was obtained by summing these difference 
-signals and convertingthem to a similarity metric. Intuitively, this method is
-equivalent to comparing the overall amount ofwhite in two difference maps when 
-judging whether one pair of objects is more visually similar than another.
-
-
 """
 
 import numpy as np
@@ -120,7 +16,16 @@ import sys
 
 def bolar(image, filters=None, n_filt=None, verbose=True):
     """
-    image : An RGB image
+    Arguments
+    ----------
+    image   : An RGB image, as a numpy array with ndim==3.
+    filters : Gaussian derivative filters from get_filters
+    n_filt  : number of filters
+    
+    Returns
+    b       : The BOLAR representation of the image, ie the output from
+              convolving the images with the filters.
+    --------
     """
     if image.ndim != 3 or image.shape[2] != 3:
         raise ValueError('image needs for be RGB with shape: (im_h, im_w, 3)')
@@ -139,11 +44,16 @@ def bolar(image, filters=None, n_filt=None, verbose=True):
 
     im_h, im_w = image.shape[:2]
     b = np.empty((im_h, im_w, n_filt * 3), dtype='float64')
+    # Achromatic, average of RGB
     im1 = image.mean(axis=2)
+    # Differenced of Red and Green
     im2 = image[:, :, 0] - image[:, :, 1]
     im2 -= im2.min()
     im2 /= im2.max()
-    im3 = ((image[:, :, 0] + image[:, :, 1]) / 2.0)
+    # Yellow - Blue
+    im3 = image[:, :, :2].mean(axis=2) - image[:, :, 2]
+    im3 -= im3.min()
+    im3 /= im3.max()    
     
     i = 0
     for scale in filters:
@@ -170,11 +80,25 @@ def bolar(image, filters=None, n_filt=None, verbose=True):
 def get_filters(im_shape):
     
     """
-    Zelinsky (2003) used 256 x 192 pixel images, and scales/sigmas of
-    3 x 3, 7 x 7, 15 x 15 and 31 x 31. Thus from 3/256 to 31/256 of the image.
-    Then the scale for an arbitrary size image would be:
-    scales = [3, 7, 15, 31] * max(im.shape) / 256
+    Argument
+    --------
+    im_shape  : Shape of image to filter. The filters are scaled to the max
+                of image height/widht.
+                
+    Returns
+    -------
+    filters   : A list of length 4 of dicts holding the individual filters.
+                E.g.:
+                filters[0] = {'dx': <np.array>, 'dy': <np.array>,
+                              'dxx': <np.array>, 'dyy': <np.array>, 'dxy': <np.array>,
+                              'dxxx': <np.array>, 'dyyy': <np.array>, 'dxxy': <np.array>, 'dxyy': <np.array>}
+    n_filt     : The total number of filters in "filters".
+
     """    
+    # Zelinsky (2003) used 256 x 192 pixel images and scales/sigmas of
+    # 3 x 3, 7 x 7, 15 x 15 and 31 x 31. Thus from 3/256 to 31/256 of the image.
+    # Then the scale for an arbitrary size image would be:
+    # scales = [3, 7, 15, 31] * max(im.shape) / 256
     scales = np.array([3., 7., 15., 31.]) * np.max(im_shape) / 256.
 
     filters = []
@@ -189,6 +113,22 @@ def get_filters(im_shape):
 
 def gaussian_derivative_filter(sigma, max_order=3, truncate=4):
     """
+    Arguments
+    ---------
+    sigma       : sigma/SD (ie the scale) of the Gaussian kernel from which the 
+                  filters are derived.
+    max_order   : Highest order of the derivatives. Filters are returned up to 
+                  to max_order
+    truncate    : Truncate the Gaussian at this many sigmas/SD
+    
+    Returns     
+    -------    
+    dG          : A dict holding Gaussian derivative filters.
+                  E.g:
+                  dG = {'dx': <np.array>, 'dy': <np.array>,
+                        'dxx': <np.array>, 'dyy': <np.array>, 'dxy': <np.array>,
+                        'dxxx': <np.array>, 'dyyy': <np.array>, 'dxxy': <np.array>, 'dxyy': <np.array>}
+    
     """
     
     sd = float(sigma)
@@ -221,8 +161,17 @@ def gaussian_derivative_filter(sigma, max_order=3, truncate=4):
     return dG
     
     
-def compare_image_pair(image0, image1, verbose=True):
+def compare_image_pair(image0, image1):
     """
+    Arguments
+    ---------
+    image0   : An RGB image, as a numpy array with ndim==3.
+    image1   : An RGB image, as a numpy array with ndim==3.    
+    
+    Returns
+    -------
+    e        : A difference map of image0 and image1, with the same size as the
+               images. 
     """
     
     if (image0.ndim != image1.ndim or image0.shape[0] != image1.shape[0] or
@@ -239,13 +188,7 @@ def compare_image_pair(image0, image1, verbose=True):
 
     filters, n_filt = get_filters(image0.shape)
     
-    if verbose:
-        print('Filtering image0...')
-
     b0 = bolar(image0, filters=filters, n_filt=n_filt, verbose=verbose)
-    if verbose:
-        print('Filtering image1...')
-
     b1 = bolar(image1, filters=filters, n_filt=n_filt, verbose=verbose)
 
     e = (1 / n_filt) * np.sqrt(((b0 - b1)**2).sum(axis=2))
@@ -255,6 +198,17 @@ def compare_image_pair(image0, image1, verbose=True):
 
 def compare_images(images, verbose=True):
     """
+    Arguments
+    ---------
+    images   : A list of RGB images (as a numpy arrays with ndim==3) for
+               pairwise comparison.
+    
+    Returns
+    -------
+    E        : A len(images) x len(images) numpy array of pairwise image 
+               differences. 
+               The difference between images[2] and images[3] would be located
+               at E[2,3] and E[3,2].
     """
     
 
@@ -278,8 +232,6 @@ def compare_images(images, verbose=True):
     
     E = np.empty((N, N))
     for i, b0 in enumerate(B):
-        if verbose:
-            print(N-i)
         for j, b1 in enumerate(B):
             e = (1 / n_filt) * np.sqrt(((b0 - b1)**2).sum(axis=2))
             E[i, j] = e.sum()
