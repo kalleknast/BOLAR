@@ -25,7 +25,7 @@ The normalized Euclidean distance between BOLAR vectors from a pair of images pr
 e = compare_image_pair(image0, image1)
 ```
 
-<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_pair.png" width="600" />
+<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_pair.png" width="800" />
 
 Finally, this difference map can be summed, providing a single value quantifying image differences.
 To do this over a list of images call:
@@ -43,7 +43,7 @@ Z = hierarchy.linkage(E)
 dd = hierarchy.dendrogram(Z)
 ```
 
-<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_differences_dendrogram.png" width="600" />
+<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_differences_dendrogram.png" width="900" />
 
 [1]:http://www.psychology.sunysb.edu/gzelinsky-/index_htm_files/Z2003.pdf
 [2]:http://maxlab.neuro.georgetown.edu/hmax.html
