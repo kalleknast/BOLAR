@@ -15,7 +15,7 @@ filters, n_filt = get_filters(image.shape)
 ```
 
 
-<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_filters.png" width="300" />
+<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_filters.png" width="400" />
 
 These 36 filters are applied 3 times. First, achromatic, the average of the RGB channels, second, the red green difference, and third the difference between yellow (average or red and green) and blue. This done over all pixes in of an image, resulting in a 108 valued BOLAR vector of filter responses for each pixel.
 
@@ -25,14 +25,14 @@ The normalized Euclidean distance between BOLAR vectors from a pair of images pr
 e = compare_image_pair(image0, image1)
 ```
 
-<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_pair.png" width="300" />
+<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_pair.png" width="600" />
 
 Finally, this difference map can be summed, providing a single value quantifying image differences.
 To do this over a list of images call:
 ```python
 E = compare_images(images, verbose=False)
 ```
-<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_differences.png" width="300" />
+<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_differences.png" width="500" />
 
 The square distance matrix can be used to further analyse image similarity with, for example, a dendrogram:
 
@@ -43,7 +43,7 @@ Z = hierarchy.linkage(E)
 dd = hierarchy.dendrogram(Z)
 ```
 
-<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_differences_dendrogram.png" width="500" />
+<img src="https://github.com/kalleknast/BOLAR/blob/master/bolar_image_differences_dendrogram.png" width="600" />
 
 [1]:http://www.psychology.sunysb.edu/gzelinsky-/index_htm_files/Z2003.pdf
 [2]:http://maxlab.neuro.georgetown.edu/hmax.html
