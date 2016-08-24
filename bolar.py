@@ -2,9 +2,9 @@
 """
 Created on Tue Aug 16 16:34:01 2016
 
-@author: hjalmar
+@author: Hjalmar K. Turesson
 
-BOLAR: Bank of Local Analyzer Responses
+BOLAR: Bank Of Local Analyzer Responses
 
 """
 
@@ -23,10 +23,11 @@ def bolar(image, filters=None, n_filt=None, verbose=True):
     n_filt  : number of filters
     
     Returns
+    --------    
     b       : The BOLAR representation of the image, ie the output from
               convolving the images with the filters.
-    --------
     """
+    
     if image.ndim != 3 or image.shape[2] != 3:
         raise ValueError('image needs for be RGB with shape: (im_h, im_w, 3)')
     
