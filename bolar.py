@@ -215,7 +215,18 @@ def compare_images(images, verbose=True):
     filters, n_filt = get_filters(images[0].shape)
     B = []
     N = len(images)
+
+    if verbose:
+        print('Filtering images', end=' ')
+            
     for i, im in enumerate(images):
+        
+        if verbose:
+            # Counter printed on the command line
+            sys.stdout.flush()
+            sys.stdout.write('%02d' % (N - i))
+            sys.stdout.flush()
+            sys.stdout.write('\b\b')
     
         if (images[0].ndim != im.ndim or images[0].shape[0] != im.shape[0] or
             images[0].size != im.size):
@@ -225,15 +236,26 @@ def compare_images(images, verbose=True):
             im = im.astype('float64')
             im /= 255.
 
-        if verbose:
-            print('filtering image %d' % i)
-
         B.append(bolar(im, filters=filters, n_filt=n_filt, verbose=verbose))
     
+    if verbose:
+        print('\nComparing BOLAR representations', end=' ')
+
     E = np.empty((N, N))
     for i, b0 in enumerate(B):
+        
+        if verbose:
+            # Counter printed on the command line
+            sys.stdout.flush()
+            sys.stdout.write('%02d' % (N - i))
+            sys.stdout.flush()
+            sys.stdout.write('\b\b')
+
         for j, b1 in enumerate(B):
             e = (1 / n_filt) * np.sqrt(((b0 - b1)**2).sum(axis=2))
             E[i, j] = e.sum()
     
+    if verbose:
+        print('\n')
+
     return E
