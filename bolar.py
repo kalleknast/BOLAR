@@ -7,9 +7,7 @@ Created on Tue Aug 16 16:34:01 2016
 BOLAR: Bank Of Local Analyzer Responses
 
 """
-
 import numpy as np
-from scipy import ndimage
 from scipy.signal import fftconvolve
 import sys
 
@@ -162,7 +160,7 @@ def gaussian_derivative_filter(sigma, max_order=3, truncate=4):
     return dG
     
     
-def compare_image_pair(image0, image1):
+def compare_image_pair(image0, image1, verbose=False):
     """
     Arguments
     ---------
@@ -227,11 +225,13 @@ def compare_images(images, verbose=True):
             sys.stdout.flush()
             sys.stdout.write('%02d' % (N - i))
             sys.stdout.flush()
-            sys.stdout.write('\b\b')
+            sys.stdout.write('\b\b\b')
     
         if (images[0].ndim != im.ndim or images[0].shape[0] != im.shape[0] or
             images[0].size != im.size):
-            raise ValueError('All images need to have the same dimensions.')
+            raise ValueError('All images need to have the same dimensions.\n'
+                             ' images[0].shape: %s\n images[%d].shape: %s' %
+                             (str(images[0].shape), i, str(images[i].shape)))
 
         if im.dtype is np.dtype('uint8'):
             im = im.astype('float64')
@@ -250,7 +250,7 @@ def compare_images(images, verbose=True):
             sys.stdout.flush()
             sys.stdout.write('%02d' % (N - i))
             sys.stdout.flush()
-            sys.stdout.write('\b\b')
+            sys.stdout.write('\b\b\b')
 
         for j, b1 in enumerate(B):
             e = (1 / n_filt) * np.sqrt(((b0 - b1)**2).sum(axis=2))

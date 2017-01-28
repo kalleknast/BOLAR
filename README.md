@@ -1,5 +1,6 @@
 # BOLAR
-A Python implementation of BOLAR developed by <cite>[Zelinsky (2003)][1]</cite>.
+An algorithm to measure image differences based on the primate visual system.
+BOLAR was developed by <cite>[Zelinsky (2003)][1]</cite>.
 
 ## What it is
 
