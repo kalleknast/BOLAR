@@ -223,7 +223,7 @@ def compare_images(images, verbose=True):
         if verbose:
             # Counter printed on the command line
             sys.stdout.flush()
-            sys.stdout.write('%02d' % (N - i))
+            sys.stdout.write('%03d' % (N - i))
             sys.stdout.flush()
             sys.stdout.write('\b\b\b')
     
@@ -248,7 +248,7 @@ def compare_images(images, verbose=True):
         if verbose:
             # Counter printed on the command line
             sys.stdout.flush()
-            sys.stdout.write('%02d' % (N - i))
+            sys.stdout.write('%03d' % (N - i))
             sys.stdout.flush()
             sys.stdout.write('\b\b\b')
 
